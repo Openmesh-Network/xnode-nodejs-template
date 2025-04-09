@@ -16,14 +16,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    users.groups.xnode-nodejs-template = { };
+    users.users.xnode-nodejs-template = {
+      isSystemUser = true;
+      group = "xnode-nodejs-template";
+    };
+
     systemd.services.xnode-nodejs-template = {
       wantedBy = [ "multi-user.target" ];
       description = "Node.js App.";
       after = [ "network.target" ];
       serviceConfig = {
         ExecStart = "${lib.getExe xnode-nodejs-template}";
-        DynamicUser = true;
-        CacheDirectory = "nodejs-app";
+        User = "xnode-nodejs-template";
+        Group = "xnode-nodejs-template";
       };
     };
   };
